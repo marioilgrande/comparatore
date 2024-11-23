@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolatore Tariffe Luce e Gas A2A</title>
+    <title>Comparatore Tariffe Luce e Gas A2A</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -92,10 +92,11 @@
             }
         }
     </style>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
 </head>
 <body>
-    <h1>Calcolatore Tariffe Luce e Gas A2A</h1>
+    <h1>Comparatore Tariffe Luce e Gas A2A</h1>
     <div class="container">
         <!-- Sezione istruzioni -->
         <div class="container">
@@ -256,48 +257,51 @@
     risultatiOfferte.innerHTML = "";
 
     for (const [nomeOfferta, valori] of Object.entries(offerte)) {
-        let costoEnergia = 0;
+    let costoEnergia = 0;
 
-        // Logica specifica per NOI2
-        if (nomeOfferta.includes("NOI2")) {
-            const costoFisso = consumoLuce * 0.7 * valori.prezzoFisso; // 70% fisso
-            const costoVariabile = consumoLuce * 0.3 * (valori.pun + valori.spreadLuce); // 30% variabile
-            costoEnergia = (costoFisso + costoVariabile).toFixed(2);
-        }
-        // Logica generica per altre offerte
-        else if (valori.pun) {
-            costoEnergia = (consumoLuce * (valori.pun + valori.spreadLuce + valori.arrotondamento)).toFixed(2);
-        } else if (valori.psv) {
-            costoMateriaGas = (consumoGas * (valori.psv + valori.spreadGas)).toFixed(2);
-        }
+    // Logica per NOI2
+    if (nomeOfferta.includes("NOI2")) {
+        const costoFisso = consumoLuce * 0.7 * valori.prezzoFisso; // 70% fisso
+        const costoVariabile = consumoLuce * 0.3 * (valori.pun + valori.spreadLuce); // 30% variabile
+        costoEnergia = (costoFisso + costoVariabile).toFixed(2);
+    }
+    // Logica per le altre offerte
+    else if (valori.pun) {
+        costoEnergia = (consumoLuce * (valori.pun + valori.spreadLuce + valori.arrotondamento)).toFixed(2);
+    } else if (valori.psv) {
+        costoEnergia = (consumoGas * (valori.psv + valori.spreadGas)).toFixed(2);
+    }
 
-        const costoFissoMensile = parseFloat(valori.costoFisso).toFixed(2);
-        const costoTotale = (parseFloat(costoEnergia) + parseFloat(costoFissoMensile)).toFixed(2);
+    const costoFissoMensile = parseFloat(valori.costoFisso).toFixed(2);
+    const costoTotale = (parseFloat(costoEnergia) + parseFloat(costoFissoMensile)).toFixed(2);
 
-        let differenza = 0;
-        if (nomeOfferta.includes("NOI2") || valori.pun) {
-            differenza = (parseFloat(costoTotale) - costoAttualeLuce).toFixed(2);
-        } else if (valori.psv) {
-            differenza = (parseFloat(costoTotale) - costoAttualeGas).toFixed(2);
-        }
+    let differenza = 0;
+    if (nomeOfferta.includes("NOI2") || valori.pun) {
+        differenza = (parseFloat(costoTotale) - costoAttualeLuce).toFixed(2);
+    } else if (valori.psv) {
+        differenza = (parseFloat(costoTotale) - costoAttualeGas).toFixed(2);
+    }
 
-        const tipoRisultato = differenza < 0 ? "risparmio" : "costo";
+    const tipoRisultato = differenza < 0 ? "risparmio" : "costo";
 
-
-        risultatiOfferte.innerHTML += `
-        <div class="offerta ${tipoRisultato}">
+    risultatiOfferte.innerHTML += `
+        <div class="offerta">
             <h3>${nomeOfferta} (${mese})</h3>
-            <p>Costo Energia: € ${costoEnergia}</p>
+            <p>${nomeOfferta.includes("GAS") ? "Spesa Gas Naturale" : "Spesa Materia Energia"}: € ${costoEnergia}</p>
             <p>Costo Fisso: € ${costoFissoMensile}</p>
-            <p><strong>Costo Totale: € ${costoTotale}</strong></p>
-            <p><strong>Risparmio fornitura: € ${differenza}</strong></p>
+            <p><strong>Totale: € ${costoTotale}</strong></p>
+            <p style="color: ${differenza < 0 ? "green" : "red"};">
+                <strong>Risparmio con fornitura A2A: € ${differenza}</strong>
+            </p>
             <button type="button" onclick="stampaOfferta('${nomeOfferta}', '${mese}', '${document.getElementById("nomeCliente").value.trim()}', ${costoEnergia}, ${costoFissoMensile}, ${costoTotale}, ${nomeOfferta.includes('GAS') ? costoAttualeGas : costoAttualeLuce})">
-    Stampa Offerta
-</button> 
-    </div>
-                `;
-            }
-
+                Stampa Offerta
+            </button>
+            <button type="button" onclick="inviaWhatsApp('${nomeOfferta}', '${mese}', '${document.getElementById("nomeCliente").value.trim()}', ${costoEnergia}, ${costoFissoMensile}, ${costoTotale}, ${nomeOfferta.includes('GAS') ? costoAttualeGas : costoAttualeLuce})">
+                Invia su WhatsApp
+            </button>
+        </div>
+    `;
+}
             document.getElementById("results").style.display = "block";
         }
  
@@ -346,6 +350,44 @@
     newWindow.document.close();
     newWindow.print();
 }
-</script>
+    function inviaWhatsApp(nomeOfferta, mese, nomeCliente, costoEnergia, costoFissoMensile, costoTotale, costoAttuale) {
+    const differenza = (costoTotale - costoAttuale).toFixed(2);
+    const tipoSpesa = nomeOfferta.includes("GAS") ? "Spesa Gas Naturale" : "Spesa Materia Energia";
+
+    // Controlla se il cliente ha inserito il nome
+    if (!nomeCliente || nomeCliente.trim() === "") {
+        alert("Inserisci un nome cliente valido per inviare il preventivo.");
+        return;
+    }
+
+    // Messaggio da condividere su WhatsApp
+    const messaggio = `
+        ---- PREVENTIVO OFFERTA A2A ----
+
+        Nome Cliente: ${nomeCliente}
+
+        Offerta: ${nomeOfferta} (${mese})
+
+        Dettagli Offerta:
+        - ${tipoSpesa}: € ${costoEnergia.toFixed(2)}
+        - Costo Fisso Mensile: € ${costoFissoMensile.toFixed(2)}
+        - Totale Offerta A2A: € ${costoTotale.toFixed(2)}
+
+        Risparmio/Differenza rispetto alla fornitura attuale: € ${differenza}
+
+        NOTA: 
+        Il presente calcolo è indicativo e non tiene conto di IVA, tasse, oneri di sistema, canone RAI, trasporto, gestione contatore e altre voci di stato.
+
+        Per ulteriori dettagli o chiarimenti, non esitare a contattarci!
+    `;
+
+    // Crea il link di WhatsApp
+    const whatsappLink = `https://wa.me/?text=${encodeURIComponent(messaggio.trim())}`;
+
+    // Apri il link in una nuova finestra/tab
+    window.open(whatsappLink, "_blank");
+}
+
+    </script>
 </body>
 </html>
