@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COMPARATORE OFFERTE A2A</title>
+    <title>Comparatore Tariffe Luce e Gas A2A</title>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f3f4f6;
+            background-color: #ffffff;
             color: #333;
         }
 
@@ -25,6 +25,8 @@
         h1 {
             text-align: center;
             font-size: 24px;
+            border: 2px solid #007BFF; /* Bordo */
+            border-radius: 4px;
             margin-bottom: 20px;
             color: #007BFF;
         }
@@ -48,11 +50,18 @@
             box-sizing: border-box;
         }
 
-        button {
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+button {
             width: 100%;
             background-color: #007BFF;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             border: none;
             padding: 12px;
             border-radius: 5px;
@@ -90,28 +99,46 @@
             margin: 5px 0;
         }
 
-        .offerta .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+        .offerta.risparmio {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
         }
-        .offerta {
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    background-color: ##D9D9D9; /* Default background */
-    transition: background-color 0.3s ease;
+
+        .offerta.costo {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+    
+
+.form-title h2 {
+    margin: 0; /* Rimuove margini extra sopra e sotto il titolo */
+    font-size: 24px; /* Dimensione del titolo */
+    font-weight: bold; /* Grassetto */
 }
 
-.offerta.risparmio {
-    background-color: #d4edda; /* Verde chiaro */
-    border-color: #c3e6cb;
+.form-title p {
+    margin: 10px 0 0 0; /* Margine sopra il paragrafo */
+    font-size: 16px; /* Dimensione del testo del paragrafo */
+    line-height: 1.5; /* Spaziatura tra le righe */
 }
 
-.offerta.costo {
-    background-color: #f8d7da; /* Rosso chiaro */
-    border-color: #f5c6cb;
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Rende il contenitore a pieno schermo */
+    width: 100%;
+}
+
+.centered-link a {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007BFF; /* Colore del testo */
+    padding: 10px 20px;
+    background-color: white; /* Sfondo del pulsante */
+    transition: all 0.3s ease;
 }
 
         .instructions {
@@ -119,45 +146,23 @@
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 20px;
-            font-size: 10px;
+            font-size: 12px;
             line-height: 1.5;
 
-        .btn-group button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .btn-stampa {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-stampa:hover {
-            background-color: #218838;
-        }
-
-        .btn-whatsapp {
-            background-color: #25d366;
-            color: white;
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #1aa34a;
-        }
+}
 
         @media (max-width: 768px) {
             button {
                 font-size: 16px;
             }
+
+            .slideshow-container {
+                height: 250px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>COMPARATORE OFFERTE A2A</h1>
-    <div class="container">
         <!-- Sezione istruzioni -->
         <div class="container">
         <!-- Sezione Istruzioni -->
@@ -170,14 +175,15 @@
         <li>Inserisci il consumo di <strong>luce</strong> (in kWh) e/o di <strong>gas</strong> (in mc).</li>
         <li>Premi il pulsante <strong>"Calcola"</strong> per ottenere le offerte disponibili.</li>
         <li>Per stampare una specifica offerta, clicca sul pulsante <strong>"Stampa Offerta"</strong> accanto ad essa.</li>
-        <li>Per inviare il preventivo ai tuoi contatti whatsapp, clicca sul pulsante <strong>"Invia su Whatsapp"</strong> accanto ad essa.</li>
+        <li>Per inviare il preventivo ai tuoi contatti <strong>Whatsapp</strong> basta premere il pulsante dedicato</li>
     </ol>
     <p style="color: #d9534f; font-weight: bold; margin-top: 10px;">
         IL PRESENTE CALCOLO È INDICATIVO E NON TIENE CONTO DI IVA, TASSE, ONERI DI SISTEMA, <br>
         CANONE RAI, TRASPORTO E GESTIONE CONTATORE E ALTRE VOCI DI STATO.
     </p>
-</div>
 
+    <div class="container">
+        <!-- Form -->
         <form id="calcolatore">
             <div class="form-group">
                 <label for="nomeCliente">Nome e Cognome Cliente</label>
@@ -194,41 +200,46 @@
                     <option value="settembre">Settembre</option>
                     <option value="ottobre">Ottobre</option>
                 </select>
-
-        </div>
-        <!-- Altri campi del form -->
-        <div class="form-group">
-        <label for="fatturazione">Tipo di Fatturazione</label>
-        <select id="fatturazione" required>
-            <option value="1">Mensile</option>
-            <option value="2">Bimestrale</option>
-            <option value="3">Trimestrale</option>
-            <option value="4">Quadrimestrale</option>
-        </select>
-    
+            </div>
+            <div class="form-group">
+                <label for="fatturazione">Tipo di Fatturazione</label>
+                <select id="fatturazione" required>
+                    <option value="1">Mensile</option>
+                    <option value="2">Bimestrale</option>
+                    <option value="3">Trimestrale</option>
+                    <option value="4">Quadrimestrale</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="consumoLuce">Consumo Luce (kWh)</label>
                 <input type="number" id="consumoLuce" placeholder="Inserisci il consumo in kWh">
             </div>
             <div class="form-group">
-                <label for="consumoGas">Consumo Gas (mc)</label>
-                <input type="number" id="consumoGas" placeholder="Inserisci il consumo in mc">
-            </div>
-            <div class="form-group">
                 <label for="costoAttualeLuce">Spesa materia energia (€)</label>
                 <input type="number" id="costoAttualeLuce" placeholder="Inserisci spesa materia energia">
             </div>
             <div class="form-group">
+                <label for="consumoGas">Consumo Gas (mc)</label>
+                <input type="number" id="consumoGas" placeholder="Inserisci il consumo in mc">
+            </div>
+            <div class="form-group">
                 <label for="costoAttualeGas">Spesa gas naturale (€)</label>
                 <input type="number" id="costoAttualeGas" placeholder="Inserisci spesa Gas naturale">
+            <div class="button-group">
+                <button type="button" onclick="calcolaCosto()">Calcola</button>
             </div>
-            <button type="button" onclick="calcolaCosto()">Calcola</button>
+            
         </form>
         <div id="results" class="results" style="display: none;">
             <h2>Risultati</h2>
             <div id="risultatiOfferte"></div>
         </div>
+    </div>
+
+    </script>
+</body>
+</html>
+
     </div>
 
     <script>
@@ -312,7 +323,6 @@
             },
         };
 
-
         function calcolaCosto() {
     const mese = document.getElementById("mese").value;
     const consumoLuce = parseFloat(document.getElementById("consumoLuce").value);
@@ -383,7 +393,6 @@
     document.getElementById("results").style.display = "block";
 }
 
- 
         function stampaOfferta(nomeOfferta, mese, nomeCliente, costoEnergia, costoFissoMensile, costoTotale, costoAttuale) {
     const differenza = (costoTotale - costoAttuale).toFixed(2);
     const tipoSpesa = nomeOfferta.includes("GAS") ? "Spesa Gas Naturale" : "Spesa Materia Energia";
@@ -466,7 +475,7 @@
     // Apri il link in una nuova finestra/tab
     window.open(whatsappLink, "_blank");
 }
-
     </script>
 </body>
 </html>
+
