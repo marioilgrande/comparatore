@@ -199,6 +199,7 @@ button {
                     <option value="settembre">Settembre</option>
                     <option value="ottobre">Ottobre</option>
                     <option value="novembre">Novembre</option>
+                    <option value="dicembre">Dicembre</option>
                 </select>
             </div>
             <div class="form-group">
@@ -321,6 +322,18 @@ button {
                 "SMART BUSINESS LUCE+": { pun: 0.130, spreadLuce: 0.029, spreadGas: 0, arrotondamento: 0.012, costoFisso: 20.00, },
                 "SMART BUSINESS GAS+": { psv: 0.477, spreadLuce: 0, spreadGas: 0.12, arrotondamento: 0.012, costoFisso: 20.00, }
             },
+            dicembre: {
+                "SMART CASA LUCE": { pun: 0.135, spreadLuce: 0.029, spreadGas: 0, arrotondamento: 0.012, costoFisso: 9.50, },
+                "SMART CASA GAS": { psv: 0.504, spreadLuce: 0, spreadGas: 0.13, arrotondamento: 0.012, costoFisso: 9.50, },
+                "NOI2 (70% fisso 0,119 €/kWh, 30% variabile PUN+SPREAD)": { pun: 0.116, spreadLuce: 0.028, prezzoFisso: 0.119, costoFisso: 9.50 },
+                "SMART CASA LUCE+": { pun: 0.135, spreadLuce: 0.028, spreadGas: 0, arrotondamento: 0.012, costoFisso: 12.00, },
+                "SMART CASA GAS+": { psv: 0.504, spreadLuce: 0, spreadGas: 0.14, arrotondamento: 0.012, costoFisso: 12.00, },
+                "SMART BUSINESS LUCE": { pun: 0.135, spreadLuce: 0.029, spreadGas: 0, arrotondamento: 0.012, costoFisso: 14.50, },
+                "SMART BUSINESS GAS": { psv: 0.504, spreadLuce: 0, spreadGas: 0.12, arrotondamento: 0.012, costoFisso: 14.50, },
+                "SMART BUSINESS LUCE+": { pun: 0.135, spreadLuce: 0.029, spreadGas: 0, arrotondamento: 0.012, costoFisso: 20.00, },
+                "SMART BUSINESS GAS+": { psv: 0.504, spreadLuce: 0, spreadGas: 0.12, arrotondamento: 0.012, costoFisso: 20.00, }
+            },
+
         };
 
         function calcolaCosto() {
@@ -478,4 +491,3 @@ button {
     </script>
 </body>
 </html>
-
